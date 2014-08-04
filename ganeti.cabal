@@ -1,0 +1,377 @@
+name:                ganeti
+version:             2.12
+synopsis:            Cluster-based virtualization management software
+-- description:
+homepage:            https://code.google.com/p/ganeti/
+license:             BSD2
+license-file:        LICENSE
+author:              Google Inc.
+maintainer:          ganeti@googlegroups.com
+-- copyright:
+-- category:
+build-type:          Simple
+extra-source-files:  README
+cabal-version:       >=1.10
+
+library
+  exposed-modules:
+    AutoConf
+    Ganeti.BasicTypes
+    Ganeti.Codec
+    Ganeti.Common
+    Ganeti.Compat
+    Ganeti.Confd.Client
+    Ganeti.Confd.ClientFunctions
+    Ganeti.Confd.Server
+    Ganeti.Confd.Types
+    Ganeti.Confd.Utils
+    Ganeti.Config
+    Ganeti.ConfigReader
+    Ganeti.Constants
+    Ganeti.ConstantUtils
+    Ganeti.Cpu.LoadParser
+    Ganeti.Cpu.Types
+    Ganeti.Curl.Internal
+    Ganeti.Curl.Multi
+    Ganeti.Daemon
+    Ganeti.Daemon.Utils
+    Ganeti.DataCollectors
+    Ganeti.DataCollectors.CLI
+    Ganeti.DataCollectors.CPUload
+    Ganeti.DataCollectors.Diskstats
+    Ganeti.DataCollectors.Drbd
+    Ganeti.DataCollectors.InstStatus
+    Ganeti.DataCollectors.InstStatusTypes
+    Ganeti.DataCollectors.Lv
+    Ganeti.DataCollectors.Program
+    Ganeti.DataCollectors.Types
+    Ganeti.Errors
+    Ganeti.Hash
+    Ganeti.Hs2Py.GenConstants
+    Ganeti.Hs2Py.GenOpCodes
+    Ganeti.Hs2Py.ListConstants
+    Ganeti.Hs2Py.OpDoc
+    Ganeti.HTools.AlgorithmParams
+    Ganeti.HTools.Backend.IAlloc
+    Ganeti.HTools.Backend.Luxi
+    Ganeti.HTools.Backend.Rapi
+    Ganeti.HTools.Backend.Simu
+    Ganeti.HTools.Backend.Text
+    Ganeti.HTools.CLI
+    Ganeti.HTools.Cluster
+    Ganeti.HTools.Container
+    Ganeti.HTools.ExtLoader
+    Ganeti.HTools.Graph
+    Ganeti.HTools.Group
+    Ganeti.HTools.Instance
+    Ganeti.HTools.Loader
+    Ganeti.HTools.Nic
+    Ganeti.HTools.Node
+    Ganeti.HTools.PeerMap
+    Ganeti.HTools.Program.Hail
+    Ganeti.HTools.Program.Harep
+    Ganeti.HTools.Program.Hbal
+    Ganeti.HTools.Program.Hcheck
+    Ganeti.HTools.Program.Hinfo
+    Ganeti.HTools.Program.Hroller
+    Ganeti.HTools.Program.Hscan
+    Ganeti.HTools.Program.Hspace
+    Ganeti.HTools.Program.Hsqueeze
+    Ganeti.HTools.Program.Main
+    Ganeti.HTools.Tags
+    Ganeti.HTools.Types
+    Ganeti.Hypervisor.Xen
+    Ganeti.Hypervisor.Xen.Types
+    Ganeti.Hypervisor.Xen.XmParser
+    Ganeti.Jobs
+    Ganeti.JQScheduler
+    Ganeti.JQScheduler.Filtering
+    Ganeti.JQScheduler.ReasonRateLimiting
+    Ganeti.JQScheduler.Types
+    Ganeti.JQueue
+    Ganeti.JQueue.Lens
+    Ganeti.JQueue.Objects
+    Ganeti.JSON
+    Ganeti.Kvmd
+    Ganeti.Lens
+    Ganeti.Locking.Allocation
+    Ganeti.Locking.Locks
+    Ganeti.Locking.Types
+    Ganeti.Locking.Waiting
+    Ganeti.Logging
+    Ganeti.Logging.Lifted
+    Ganeti.Logging.WriterLog
+    Ganeti.Luxi
+    Ganeti.Metad.Config
+    Ganeti.Metad.ConfigServer
+    Ganeti.Metad.Server
+    Ganeti.Metad.Types
+    Ganeti.Metad.WebServer
+    Ganeti.Monitoring.Server
+    Ganeti.Network
+    Ganeti.Objects
+    Ganeti.Objects.BitArray
+    Ganeti.Objects.Lens
+    Ganeti.OpCodes
+    Ganeti.OpCodes.Lens
+    Ganeti.OpParams
+    Ganeti.Parsers
+    Ganeti.Path
+    Ganeti.PyValue
+    Ganeti.Query.Cluster
+    Ganeti.Query.Common
+    Ganeti.Query.Exec
+    Ganeti.Query.Export
+    Ganeti.Query.Filter
+    Ganeti.Query.FilterRules
+    Ganeti.Query.Group
+    Ganeti.Query.Instance
+    Ganeti.Query.Job
+    Ganeti.Query.Language
+    Ganeti.Query.Locks
+    Ganeti.Query.Network
+    Ganeti.Query.Node
+    Ganeti.Query.Query
+    Ganeti.Query.Server
+    Ganeti.Query.Types
+    Ganeti.Rpc
+    Ganeti.Runtime
+    Ganeti.SlotMap
+    Ganeti.Ssconf
+    Ganeti.Storage.Diskstats.Parser
+    Ganeti.Storage.Diskstats.Types
+    Ganeti.Storage.Drbd.Parser
+    Ganeti.Storage.Drbd.Types
+    Ganeti.Storage.Lvm.LVParser
+    Ganeti.Storage.Lvm.Types
+    Ganeti.Storage.Utils
+    Ganeti.THH
+    Ganeti.THH.Field
+    Ganeti.THH.HsRPC
+    Ganeti.THH.PyRPC
+    Ganeti.THH.PyType
+    Ganeti.THH.RPC
+    Ganeti.THH.Types
+    Ganeti.Types
+    Ganeti.UDSServer
+    Ganeti.Utils
+    Ganeti.Utils.AsyncWorker
+    Ganeti.Utils.Atomic
+    Ganeti.Utils.IORef
+    Ganeti.Utils.Livelock
+    Ganeti.Utils.Monad
+    Ganeti.Utils.MultiMap
+    Ganeti.Utils.MVarLock
+    Ganeti.Utils.Random
+    Ganeti.Utils.Statistics
+    Ganeti.Utils.UniStd
+    Ganeti.Utils.Validate
+    Ganeti.VCluster
+    Ganeti.Version
+    Ganeti.WConfd.Client
+    Ganeti.WConfd.ConfigState
+    Ganeti.WConfd.ConfigVerify
+    Ganeti.WConfd.ConfigWriter
+    Ganeti.WConfd.Core
+    Ganeti.WConfd.DeathDetection
+    Ganeti.WConfd.Language
+    Ganeti.WConfd.Monad
+    Ganeti.WConfd.Persistent
+    Ganeti.WConfd.Server
+    Ganeti.WConfd.Ssconf
+    Ganeti.WConfd.TempRes
+    Test.AutoConf
+    Test.Ganeti.Attoparsec
+    Test.Ganeti.BasicTypes
+    Test.Ganeti.Common
+    Test.Ganeti.Confd.Types
+    Test.Ganeti.Confd.Utils
+    Test.Ganeti.Constants
+    Test.Ganeti.Daemon
+    Test.Ganeti.Errors
+    Test.Ganeti.HTools.Backend.Simu
+    Test.Ganeti.HTools.Backend.Text
+    Test.Ganeti.HTools.CLI
+    Test.Ganeti.HTools.Cluster
+    Test.Ganeti.HTools.Container
+    Test.Ganeti.HTools.ExtLoader
+    Test.Ganeti.HTools.Graph
+    Test.Ganeti.HTools.Instance
+    Test.Ganeti.HTools.Loader
+    Test.Ganeti.HTools.Node
+    Test.Ganeti.HTools.PeerMap
+    Test.Ganeti.HTools.Types
+    Test.Ganeti.Hypervisor.Xen.XmParser
+    Test.Ganeti.Jobs
+    Test.Ganeti.JQScheduler
+    Test.Ganeti.JQueue
+    Test.Ganeti.JQueue.Objects
+    Test.Ganeti.JSON
+    Test.Ganeti.Kvmd
+    Test.Ganeti.Locking.Allocation
+    Test.Ganeti.Locking.Locks
+    Test.Ganeti.Locking.Waiting
+    Test.Ganeti.Luxi
+    Test.Ganeti.Network
+    Test.Ganeti.Objects
+    Test.Ganeti.Objects.BitArray
+    Test.Ganeti.OpCodes
+    Test.Ganeti.Query.Aliases
+    Test.Ganeti.Query.Filter
+    Test.Ganeti.Query.Instance
+    Test.Ganeti.Query.Language
+    Test.Ganeti.Query.Network
+    Test.Ganeti.Query.Query
+    Test.Ganeti.Rpc
+    Test.Ganeti.Runtime
+    Test.Ganeti.SlotMap
+    Test.Ganeti.Ssconf
+    Test.Ganeti.Storage.Diskstats.Parser
+    Test.Ganeti.Storage.Drbd.Parser
+    Test.Ganeti.Storage.Drbd.Types
+    Test.Ganeti.Storage.Lvm.LVParser
+    Test.Ganeti.TestCommon
+    Test.Ganeti.TestHelper
+    Test.Ganeti.TestHTools
+    Test.Ganeti.TestImports
+    Test.Ganeti.THH
+    Test.Ganeti.THH.Types
+    Test.Ganeti.Types
+    Test.Ganeti.Utils
+    Test.Ganeti.Utils.MultiMap
+    Test.Ganeti.Utils.Statistics
+    Test.Ganeti.WConfd.TempRes
+  -- other-modules:
+  other-extensions:
+      TemplateHaskell
+  build-depends:
+      base                          >= 4.5.0.0
+    , array                         >= 0.4.0.1
+    , bytestring                    >= 0.10.0.2
+    , containers                    >= 0.5.0.0
+    , deepseq                       >= 1.3.0.1
+    , directory                     >= 1.2.0.1
+    , filepath                      >= 1.3.0.1
+    , mtl                           >= 2.1.2
+    , network                       >= 2.4.1.2
+    , newtype                       >= 0.2
+    , old-time                      >= 1.1.0.1
+    , parallel                      >= 3.2.0.4
+    , pretty                        >= 1.1.1.0
+    , process                       >= 1.1.0.2
+    , random                        >= 1.0.1.1
+    , template-haskell              >= 2.8.0.0
+    , text                          >= 0.11.3.1
+    , transformers                  >= 0.3.0.0
+    , unix                          >= 2.6.0.1
+
+    , attoparsec                    >= 0.11.1.0   && < 0.12
+    , base64-bytestring             >= 1.0.0.1    && < 1.1
+    , case-insensitive              >= 1.1.0.3    && < 1.2
+    , Crypto                        >= 4.2.5.1    && < 4.3
+    , curl                          >= 1.3.8      && < 1.4
+    , hinotify                      >= 0.3.6      && < 0.4
+    , hscolour                      >= 1.20.3     && < 1.21
+    , hslogger                      >= 1.2.3      && < 1.3
+    , json                          == 0.7
+    , lens                          == 4.0.5
+    , lifted-base                   >= 0.2.2.0    && < 0.3
+    , monad-control                 >= 0.3.3.0    && < 0.4
+    , MonadCatchIO-transformers     >= 0.3.0.0    && < 0.4
+    , network                       >= 2.4.1.2    && < 2.5
+    , parallel                      >= 3.2.0.4    && < 3.3
+    , parsec                        >= 3.1.3      && < 3.2
+    , PSQueue                       >= 1.1        && < 1.2
+    , regex-pcre                    >= 0.94.4     && < 0.95
+    , semigroupoids                 == 4.0.4
+    , temporary                     >= 1.2.0.1    && < 1.3
+    , transformers-base             >= 0.4.2      && < 0.5
+    , utf8-string                   >= 0.3.8      && < 0.4
+    , vector                        >= 0.10.9.1   && < 0.11
+    , zlib                          >= 0.5.4.1    && < 0.6
+
+    , HUnit                         >= 1.2.5.2    && < 1.3
+    , QuickCheck                    >= 2.6        && < 2.7
+    , test-framework                >= 0.8.0.3    && < 0.9
+    , test-framework-hunit          >= 0.3.0.1    && < 0.4
+    , test-framework-quickcheck2    >= 0.3.0.2    && < 0.4
+
+    , snap-core                     >= 0.9.6.3    && < 0.10
+    , snap-server                   >= 0.9.4.0    && < 0.10
+
+    -- Executables:
+    -- , happy
+    -- , shelltestrunner
+  hs-source-dirs:
+    src, test/hs
+  build-tools:
+    hsc2hs
+  default-language:
+    Haskell2010
+  ghc-options:
+    -Wall
+
+
+executable ganeti-kvmd
+  hs-source-dirs: apps
+  main-is: ganeti-kvmd.hs
+  default-language: Haskell2010
+  build-depends: base, ganeti
+
+executable ganeti-metad
+  hs-source-dirs: apps
+  main-is: ganeti-metad.hs
+  default-language: Haskell2010
+  build-depends: base, ganeti
+
+executable ganeti-mond
+  hs-source-dirs: apps
+  main-is: ganeti-mond.hs
+  default-language: Haskell2010
+  build-depends: base, ganeti
+
+executable ganeti-wconfd
+  hs-source-dirs: apps
+  main-is: ganeti-wconfd.hs
+  default-language: Haskell2010
+  build-depends: base, ganeti
+
+executable hconfd
+  hs-source-dirs: apps
+  main-is: hconfd.hs
+  default-language: Haskell2010
+  build-depends: base, ganeti
+
+executable hluxid
+  hs-source-dirs: apps
+  main-is: hluxid.hs
+  default-language: Haskell2010
+  build-depends: base, ganeti
+
+executable hs2py
+  hs-source-dirs: apps
+  main-is: hs2py.hs
+  default-language: Haskell2010
+  build-depends: base, ganeti
+
+executable htools
+  hs-source-dirs: apps
+  main-is: htools.hs
+  default-language: Haskell2010
+  build-depends: base, ganeti
+
+executable mon-collector
+  hs-source-dirs: apps
+  main-is: mon-collector.hs
+  default-language: Haskell2010
+  build-depends: base, ganeti
+
+executable htest
+  hs-source-dirs: apps
+  main-is: htest.hs
+  default-language: Haskell2010
+  build-depends:
+      base
+    , ganeti
+    , hslogger
+    , test-framework
