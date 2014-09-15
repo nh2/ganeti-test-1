@@ -345,6 +345,9 @@ handleCall _ status _ (ReplaceFilter mUuid priority predicates action
             . (configFiltersL . alterContainerL uuid .~ Just rule)
             $ lockedCfg
 
+    -- Filters were changed, run job scheduler.
+    liftIO $ scheduleSomeJobs status
+
     -- Return UUID of added/replaced filter.
     return $ showJSON uuid
 
@@ -361,6 +364,9 @@ handleCall _ status cfg (DeleteFilter uuid) = runResultT $ do
     writeConfig cid
       . (configFiltersL . alterContainerL uuid .~ Nothing)
       $ lockedCfg
+
+  -- Filters were changed, run job scheduler.
+  liftIO $ scheduleSomeJobs status
 
   return JSNull
 
