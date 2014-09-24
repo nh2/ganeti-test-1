@@ -283,8 +283,8 @@ library
     , hinotify                      >= 0.3.6      && < 0.4
     , hscolour                      >= 1.20.3     && < 1.21
     , hslogger                      >= 1.2.3      && < 1.3
-    , json                          == 0.7
-    , lens                          == 4.0.5
+    , json                          >= 0.7        && < 0.8
+    , lens                          >= 4.0.5      && < 4.1
     , lifted-base                   >= 0.2.2.0    && < 0.3
     , monad-control                 >= 0.3.3.0    && < 0.4
     , MonadCatchIO-transformers     >= 0.3.0.0    && < 0.4
@@ -292,7 +292,7 @@ library
     , parallel                      >= 3.2.0.4    && < 3.3
     , parsec                        >= 3.1.3      && < 3.2
     , regex-pcre                    >= 0.94.4     && < 0.95
-    , semigroupoids                 == 4.0.4
+    , semigroupoids                 >= 4.0.4      && < 4.1
     , temporary                     >= 1.2.0.1    && < 1.3
     , transformers-base             >= 0.4.2      && < 0.5
     , utf8-string                   >= 0.3.8      && < 0.4
