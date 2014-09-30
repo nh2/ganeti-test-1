@@ -52,10 +52,12 @@ import Test.Ganeti.TestCommon
 import Test.Ganeti.TestHelper
 import Test.Ganeti.Types ()
 
+import Ganeti.JQScheduler
 import Ganeti.JQScheduler.ReasonRateLimiting
 import Ganeti.JQScheduler.Types
 import Ganeti.JQueue.Lens
 import Ganeti.JQueue.Objects
+import Ganeti.Objects (FilterRule(..))
 import Ganeti.OpCodes.Lens
 import Ganeti.SlotMap
 
@@ -189,8 +191,19 @@ prop_reasonRateLimit =
                  | (k, slot@(Slot occup limit)) <- Map.toList newSlots ]
            ]
 
+-- | Tests that filter rule ordering is determined (solely) by priority,
+-- watermark and UUID, as defined in `doc/design-optables.rst`.
+prop_filterRuleOrder :: Property
+prop_filterRuleOrder = do
+  a <- arbitrary
+  b <- arbitrary
+  filterRuleOrder a b ==? (frPriority a, frWatermark a, frUuid a)
+                          `compare`
+                          (frPriority b, frWatermark b, frUuid b)
+
 testSuite "JQScheduler"
             [ 'case_parseReasonRateLimit
             , 'prop_slotMapFromJob_conflicting_buckets
             , 'prop_reasonRateLimit
+            , 'prop_filterRuleOrder
             ]
