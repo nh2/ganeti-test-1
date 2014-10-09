@@ -39,6 +39,7 @@ module Ganeti.JQScheduler.ReasonRateLimiting
   , parseReasonRateLimit
   , countMapFromJob
   , slotMapFromJobs
+  , unoccupiedSlotMapFromJobs
   ) where
 
 import Data.List

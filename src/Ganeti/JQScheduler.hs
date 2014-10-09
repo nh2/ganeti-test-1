@@ -39,7 +39,6 @@ module Ganeti.JQScheduler
   , jqForkLock
   , emptyJQStatus
   , selectJobsToRun
-  , filterRuleOrder
   , scheduleSomeJobs
   , initJQScheduler
   , enqueueNewJobs
@@ -61,6 +60,7 @@ import Data.List
 import Data.Maybe
 import qualified Data.Map as Map
 import Data.Ord (comparing)
+import Data.Set (Set)
 import qualified Data.Set as S
 import System.INotify
 
@@ -69,7 +69,8 @@ import Ganeti.Constants as C
 import Ganeti.Errors
 import Ganeti.JQScheduler.Filtering (firstMatchingFilter, jobFiltering)
 import Ganeti.JQScheduler.Types
-import Ganeti.JQScheduler.ReasonRateLimiting (reasonRateLimit)
+import Ganeti.JQScheduler.ReasonRateLimiting (reasonRateLimit, slotMapFromJobs, countMapFromJob, unoccupiedSlotMapFromJobs)
+import Ganeti.SlotMap
 import Ganeti.JQueue as JQ
 import Ganeti.JSON (fromContainer)
 import Ganeti.Lens hiding (chosen)
@@ -122,7 +123,7 @@ unreadJob job = JobWithStat {jJob=job, jStat=nullFStat, jINotify=Nothing}
 
 -- | Reload interval for polling the running jobs for updates in microseconds.
 watchInterval :: Int
-watchInterval = C.luxidJobqueuePollInterval * 1000000 
+watchInterval = C.luxidJobqueuePollInterval * 1000000
 
 -- | Read a cluster parameter from the configuration, using a default if the
 -- configuration is not available.
@@ -304,7 +305,7 @@ jobEligible queue jWS =
 -- pure function doing the scheduling.
 selectJobsToRun :: Int  -- ^ How many jobs are allowed to run at the
                         -- same time.
-                -> [FilterRule] -- ^ Filter rules to respect for scheduling
+                -> Set FilterRule -- ^ Filter rules to respect for scheduling
                 -> Queue
                 -> (Queue, [JobWithStat])
 selectJobsToRun count filters queue =
@@ -355,7 +356,7 @@ failJobs cfg qstate jobs = do
 
 
 -- | Checks if any jobs match a REJECT filter rule, and cancels them.
-cancelRejectedJobs :: JQStatus -> ConfigData -> [FilterRule] -> IO ()
+cancelRejectedJobs :: JQStatus -> ConfigData -> Set FilterRule -> IO ()
 cancelRejectedJobs qstate cfg filters = do
 
   enqueuedJobs <- map jJob . qEnqueued <$> readIORef (jqJobs qstate)
@@ -391,14 +392,6 @@ cancelRejectedJobs qstate cfg filters = do
       Bad s -> logError s -- passing a nonexistent job ID is an error here
 
 
--- | Order in which filter rules are evaluated.
-filterRuleOrder :: FilterRule -> FilterRule -> Ordering
-filterRuleOrder =
-  comparing $ \fr -> (frPriority fr, frWatermark fr, frUuid fr)
-
-{-# INLINE filterRuleOrder #-}
-
-
 -- | Schedule jobs to be run. This is the IO wrapper around the
 -- pure `selectJobsToRun`.
 scheduleSomeJobs :: JQStatus -> IO ()
@@ -409,13 +402,28 @@ scheduleSomeJobs qstate = do
       let msg = "Configuration unavailable: " ++ err
       logError msg
     Ok cfg -> do
-      -- Filters need to be processed in the order as given by the spec;
-      -- see `filterRuleOrder`.
-      let filters = sortBy filterRuleOrder
-                      . Map.elems . fromContainer $ configFilters cfg
+      let filters = S.fromList . Map.elems . fromContainer $ configFilters cfg
 
       -- Check if jobs are rejected by a REJECT filter, and cancel them.
       cancelRejectedJobs qstate cfg filters
+
+      q <- readIORef $ jqJobs qstate
+      let js = filter (jobEligible q) $ qEnqueued q
+      --     scheduled = reasonRateLimit q js
+
+      let xx s = appendFile "/tmp/ganeti-niklash.log" (show s ++ "\n")
+      -- xx (js, scheduled)
+      -- let qjobs = map jJob $ qRunning q ++ qManipulated q
+      -- xx ("labelCountMapFromJob", map labelCountMapFromJob qjobs)
+      let running = map jJob $ qRunning q ++ qManipulated q
+          candidates = map jJob js
+          initSlotMap = unoccupiedSlotMapFromJobs (running ++ candidates)
+                        `occupySlots`
+                        toCountMap (slotMapFromJobs running)
+      xx ("initSlotMap", initSlotMap)
+      let jobBucketss = map (countMapFromJob . jJob) js
+      xx ("jobBucketss", jobBucketss)
+
 
       -- Select the jobs to run.
       count <- getMaxRunningJobs qstate
@@ -439,7 +447,7 @@ scheduleSomeJobs qstate = do
 showQueue :: Queue -> String
 showQueue (Queue {qEnqueued=waiting, qRunning=running}) =
   let showids = show . map (fromJobId . qjId . jJob)
-  in "Waiting jobs: " ++ showids waiting 
+  in "Waiting jobs: " ++ showids waiting
        ++ "; running jobs: " ++ showids running
 
 -- | Check if a job died, and clean up if so.

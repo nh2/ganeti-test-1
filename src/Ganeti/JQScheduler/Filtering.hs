@@ -37,11 +37,16 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 module Ganeti.JQScheduler.Filtering
   ( firstMatchingFilter
   , jobFiltering
+  -- * For testing only
+  , matchPredicate
+  , matches
   ) where
 
 import Data.List
 import Data.Maybe
 import qualified Data.Map as Map
+import Data.Set (Set)
+import qualified Data.Set as Set
 import qualified Text.JSON as J
 
 import Ganeti.BasicTypes
@@ -51,7 +56,8 @@ import Ganeti.JQScheduler.Types
 import Ganeti.JQueue (QueuedJob(..))
 import Ganeti.JQueue.Lens
 import Ganeti.JSON
-import Ganeti.Objects (FilterRule(..), FilterAction(..), FilterPredicate(..))
+import Ganeti.Objects (FilterRule(..), FilterAction(..), FilterPredicate(..),
+                       filterRuleOrder)
 import Ganeti.OpCodes (OpCode)
 import Ganeti.OpCodes.Lens
 import Ganeti.Query.Language
@@ -143,12 +149,21 @@ matches job FilterRule{ frPredicates, frWatermark } =
   all (matchPredicate job frWatermark) frPredicates
 
 
+-- | Filters need to be processed in the order as given by the spec;
+-- see `filterRuleOrder`.
+orderFilters :: Set FilterRule -> [FilterRule]
+orderFilters = sortBy filterRuleOrder . Set.toList
+
+
 -- | Finds the first filter whose predicates all match the job and whose
 -- action is not `Continue`.
-firstMatchingFilter :: [FilterRule] -> QueuedJob -> Maybe FilterRule
+firstMatchingFilter :: Set FilterRule -> QueuedJob -> Maybe FilterRule
 firstMatchingFilter filters job =
   -- Skip over all `Continue`s, to the first filter that matches.
-  find ((Continue /=) . frAction) . filter (matches job) $ filters
+  find ((Continue /=) . frAction)
+    . filter (matches job)
+    . orderFilters
+    $ filters
 
 
 -- | SlotMap for filter rule rate limiting, having `FilterRule` UUIDs as keys.
@@ -171,17 +186,18 @@ tryFitSlots st@FilterChainState{ rateLimitSlotMap = slotMap } countMap =
     else Nothing
 
 
--- | For a given job queue and list of filters, calculates how many rate
+-- | For a given job queue and set of filters, calculates how many rate
 -- limiting filter slots are available and how many are taken by running jobs
 -- in the queue.
-queueRateLimitSlotMap :: Queue -> [FilterRule] -> RateLimitSlotMap
+queueRateLimitSlotMap :: Queue -> Set FilterRule -> RateLimitSlotMap
 queueRateLimitSlotMap queue filters =
   let -- Rate limiting slots for each filter, with 0 occupied count each
       -- (limits only).
       emptyFilterSlots =
-        Map.fromList [ (uuid, Slot 0 n)
-                     | FilterRule{ frUuid   = uuid
-                                 , frAction = RateLimit n } <- filters ]
+        Map.fromList
+          [ (uuid, Slot 0 n)
+          | FilterRule{ frUuid   = uuid
+                      , frAction = RateLimit n } <- Set.toList filters ]
 
       -- How many rate limiting slots are taken by the jobs currently running
       -- in the queue jobs (counts only).
@@ -204,7 +220,7 @@ queueRateLimitSlotMap queue filters =
 -- The initial `FilterChainState` is currently not cached across
 -- `selectJobsToRun` invocations because the number of running jobs is
 -- typically small (< 100).
-jobFiltering :: Queue -> [FilterRule] -> [JobWithStat] -> [JobWithStat]
+jobFiltering :: Queue -> Set FilterRule -> [JobWithStat] -> [JobWithStat]
 jobFiltering queue filters =
   let
       processFilters :: FilterChainState

@@ -47,6 +47,7 @@ library
     Ganeti.BasicTypes
     Ganeti.Errors
     Ganeti.JQScheduler
+    Ganeti.JQScheduler.Filtering
     Ganeti.JQScheduler.ReasonRateLimiting
     Ganeti.JQScheduler.Types
     Ganeti.Hash

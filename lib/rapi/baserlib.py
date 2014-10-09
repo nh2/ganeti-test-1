@@ -358,6 +358,7 @@ class ResourceBase(object):
         val = val[0]
       else:
         val = default
+    assert isinstance(val, str) or val is default
     return val
 
   def getBodyParameter(self, name, *args):
