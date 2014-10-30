@@ -271,9 +271,9 @@ def RunClusterTests():
     (["cluster-oob", qa_config.NoVirtualCluster],
      qa_cluster.TestClusterOob),
     ("cluster-instance-communication", qa_cluster.TestInstanceCommunication),
-    (qa_rapi.Enabled, qa_rapi.TestVersion),
-    (qa_rapi.Enabled, qa_rapi.TestEmptyCluster),
-    (qa_rapi.Enabled, qa_rapi.TestRapiQuery),
+    # (qa_rapi.Enabled, qa_rapi.TestVersion),
+    # (qa_rapi.Enabled, qa_rapi.TestEmptyCluster),
+    # (qa_rapi.Enabled, qa_rapi.TestRapiQuery),
     ]:
     RunTestIf(test, fn)
 
@@ -434,17 +434,17 @@ def RunFilterTests():
   """Run tests for job filter management.
 
   """
-  RunTestIf("filters", qa_filters.TestFilterList)
-  RunTestIf("filters", qa_filters.TestFilterListFields)
-  RunTestIf("filters", qa_filters.TestFilterAddRemove)
-  RunTestIf("filters", qa_filters.TestFilterReject)
-  RunTestIf("filters", qa_filters.TestFilterOpCode)
-  RunTestIf("filters", qa_filters.TestFilterReasonChain)
-  RunTestIf("filters", qa_filters.TestFilterContinue)
+  # RunTestIf("filters", qa_filters.TestFilterList)
+  # RunTestIf("filters", qa_filters.TestFilterListFields)
+  # RunTestIf("filters", qa_filters.TestFilterAddRemove)
+  # RunTestIf("filters", qa_filters.TestFilterReject)
+  # RunTestIf("filters", qa_filters.TestFilterOpCode)
+  # RunTestIf("filters", qa_filters.TestFilterReasonChain)
+  # RunTestIf("filters", qa_filters.TestFilterContinue)
   RunTestIf("filters", qa_filters.TestFilterAcceptPause)
-  RunTestIf("filters", qa_filters.TestFilterWatermark)
-  RunTestIf("filters", qa_filters.TestFilterRateLimit)
-  RunTestIf("filters", qa_filters.TestAdHocReasonRateLimit)
+  # RunTestIf("filters", qa_filters.TestFilterWatermark)
+  # RunTestIf("filters", qa_filters.TestFilterRateLimit)
+  # RunTestIf("filters", qa_filters.TestAdHocReasonRateLimit)
 
 
 def RunGroupRwTests():
@@ -950,15 +950,15 @@ def RunQa():
   """
   rapi_user = "ganeti-qa"
 
-  RunTestBlock(RunEnvTests)
+  # RunTestBlock(RunEnvTests)
   rapi_secret = SetupCluster(rapi_user)
 
   if qa_rapi.Enabled():
     # Load RAPI certificate
     qa_rapi.Setup(rapi_user, rapi_secret)
 
-  RunTestBlock(RunClusterTests)
-  RunTestBlock(RunOsTests)
+  # RunTestBlock(RunClusterTests)
+  # RunTestBlock(RunOsTests)
 
   RunTestIf("tags", qa_tags.TestClusterTags)
 
@@ -979,7 +979,7 @@ def RunQa():
     pnode.Release()
 
   # Make sure the cluster is clean before running instance tests
-  qa_cluster.AssertClusterVerify()
+  # qa_cluster.AssertClusterVerify()
 
   pnode = qa_config.AcquireNode()
   try:
